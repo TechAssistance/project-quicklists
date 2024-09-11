@@ -1,8 +1,12 @@
-import { Component, input } from '@angular/core';
-import { ChecklistItem } from '../../shared/interfaces/checklist-item';
+import { Component, input, output } from '@angular/core';
+import {
+  ChecklistItem,
+  RemoveChecklistItem,
+} from '../../shared/interfaces/checklist-item';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   standalone: true,
@@ -13,6 +17,11 @@ import { MatCardModule } from '@angular/material/card';
         <mat-list>
           @for (item of checklistItems(); track item.id) {
             <mat-list-item>
+              <mat-checkbox
+                [checked]="item.checked"
+                (change)="toggle.emit(item.id)"
+                matListItemMeta
+              ></mat-checkbox>
               <span matListItemTitle>{{ item.title }}</span>
             </mat-list-item>
           } @empty {
@@ -31,8 +40,9 @@ import { MatCardModule } from '@angular/material/card';
       </mat-card-content>
     </mat-card>
   `,
-  imports: [MatListModule, MatIconModule, MatCardModule],
+  imports: [MatListModule, MatCheckboxModule, MatIconModule, MatCardModule],
 })
 export class ChecklistItemListComponent {
   checklistItems = input.required<ChecklistItem[]>();
+  toggle = output<RemoveChecklistItem>();
 }
