@@ -27,6 +27,7 @@ export class ChecklistItemService {
   // sources
   add$ = new Subject<AddChecklistItem>();
   toggle$ = new Subject<RemoveChecklistItem>();
+  reset$ = new Subject<RemoveChecklist>();
 
   constructor() {
     // Add Reducer
@@ -53,6 +54,16 @@ export class ChecklistItemService {
           item.id === checklistItemId
             ? { ...item, checked: !item.checked }
             : item,
+        ),
+      })),
+    );
+
+    // Reset Reducer
+    this.reset$.pipe(takeUntilDestroyed()).subscribe((checklistId) =>
+      this.state.update((state) => ({
+        ...state,
+        checklistItems: state.checklistItems.map((item) =>
+          item.checklistId === checklistId ? { ...item, checked: false } : item,
         ),
       })),
     );
